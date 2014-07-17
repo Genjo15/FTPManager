@@ -1,0 +1,16 @@
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.Properties.Resources.resources
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.csproj.GenerateResource.Cache
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.dll.licenses
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\FTPManager.dll.config
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\FTPManager.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\FTPManager.pdb
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\ComponentFactory.Krypton.Design.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\ComponentFactory.Krypton.Docking.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\ComponentFactory.Krypton.Navigator.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\ComponentFactory.Krypton.Ribbon.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\ComponentFactory.Krypton.Toolkit.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\bin\Debug\ComponentFactory.Krypton.Workspace.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.dll
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.pdb
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.FTPManager.resources
+d:\documents\visual studio 2012\Projects\FTPManager\FTPManager\obj\Debug\FTPManager.csprojResolveAssemblyReference.cache
