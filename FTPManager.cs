@@ -122,6 +122,7 @@ namespace FTPManager
             DeleteButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
             EditButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
             ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+            DLLastUpdateButton.Enabled = false;
             FTPListDataGridView.ClearSelection();
         }
 
@@ -176,6 +177,7 @@ namespace FTPManager
                 DeleteButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
                 EditButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
                 ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                DLLastUpdateButton.Enabled = false;
                 FTPListDataGridView.ClearSelection();
             }
         }
@@ -213,6 +215,7 @@ namespace FTPManager
             OkPictureBox.Visible = false;
             BackButton.Visible = false;
             AddButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+            DLLastUpdateButton.Enabled = false;
 
             FTPListDataGridView.ClearSelection();
         }
@@ -497,6 +500,7 @@ namespace FTPManager
         {
             ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
             StopButton.Enabled = ButtonEnabled.True;
+            DLLastUpdateButton.Enabled = false;
             FileExplorerListView.SetSortIcon(0, SortOrder.None);
             FileExplorerListView.ListViewItemSorter = new ListViewItemComparer(0,SortOrder.Ascending);
 
@@ -568,6 +572,7 @@ namespace FTPManager
         private void DownloadButton_Click(object sender, EventArgs e)
         {
             DownloadButton.Enabled = ButtonEnabled.False;
+            DLLastUpdateButton.Enabled = false;
 
             /* Get item to download */
             foreach (File file in _CurrentDirectory.Get_FilesList())
@@ -615,6 +620,19 @@ namespace FTPManager
                     _Worker.RunWorkerAsync(arguments);
                 }
             }
+        }
+
+        /*******************************************\
+         * Download last update of selected region *
+        \*******************************************/
+
+        private void DLLastUpdateButton_Click(object sender, EventArgs e)
+        {
+            /* Clear interface */
+            ProgressBar.Value = 0;
+            ProgressLabel.Text = "-";
+            DirFileCounterLabel.Text = "";
+            FTPBrowserHeaderGroup.ValuesPrimary.Heading = "FTP Browser :";
         }
 
         /*****************\
@@ -750,12 +768,15 @@ namespace FTPManager
             {
                 DownloadButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False; ;
 
-                if ((Boolean)TargetDirectoryButton.Tag == false)
+                if ((Boolean)TargetDirectoryButton.Tag == false) // if no edition mode
                 {
                     DeleteButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
                     EditButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
-                    if(!_Worker.IsBusy)
+                    if (!_Worker.IsBusy)
+                    {
                         ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.True;
+                        DLLastUpdateButton.Enabled = true;
+                    }
                 }
 
                 foreach (Region element in _RegionsList)

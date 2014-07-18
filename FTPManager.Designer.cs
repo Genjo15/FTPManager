@@ -50,6 +50,9 @@ namespace FTPManager
             this.FTPListGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.FTPListDataGridView = new ComponentFactory.Krypton.Toolkit.KryptonDataGridView();
             this.GeneralControlsGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
+            this.GeneralControlsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.kryptonButton1 = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            this.DLLastUpdateButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.SplitContainer3 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ServerInfoGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.BackButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
@@ -118,7 +121,9 @@ namespace FTPManager
             ((System.ComponentModel.ISupportInitialize)(this.FTPListDataGridView)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox.Panel)).BeginInit();
+            this.GeneralControlsGroupBox.Panel.SuspendLayout();
             this.GeneralControlsGroupBox.SuspendLayout();
+            this.GeneralControlsTableLayoutPanel.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer3.Panel1)).BeginInit();
             this.SplitContainer3.Panel1.SuspendLayout();
@@ -339,9 +344,55 @@ namespace FTPManager
             this.GeneralControlsGroupBox.Location = new System.Drawing.Point(5, 2);
             this.GeneralControlsGroupBox.Name = "GeneralControlsGroupBox";
             this.GeneralControlsGroupBox.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.ProfessionalOffice2003;
+            // 
+            // GeneralControlsGroupBox.Panel
+            // 
+            this.GeneralControlsGroupBox.Panel.Controls.Add(this.GeneralControlsTableLayoutPanel);
             this.GeneralControlsGroupBox.Size = new System.Drawing.Size(288, 110);
             this.GeneralControlsGroupBox.TabIndex = 0;
             this.GeneralControlsGroupBox.Values.Heading = "General Controls : ";
+            // 
+            // GeneralControlsTableLayoutPanel
+            // 
+            this.GeneralControlsTableLayoutPanel.BackColor = System.Drawing.Color.Transparent;
+            this.GeneralControlsTableLayoutPanel.ColumnCount = 2;
+            this.GeneralControlsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.GeneralControlsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.GeneralControlsTableLayoutPanel.Controls.Add(this.kryptonButton1, 1, 0);
+            this.GeneralControlsTableLayoutPanel.Controls.Add(this.DLLastUpdateButton, 0, 0);
+            this.GeneralControlsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.GeneralControlsTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
+            this.GeneralControlsTableLayoutPanel.Name = "GeneralControlsTableLayoutPanel";
+            this.GeneralControlsTableLayoutPanel.Padding = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.GeneralControlsTableLayoutPanel.RowCount = 3;
+            this.GeneralControlsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.GeneralControlsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.GeneralControlsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.GeneralControlsTableLayoutPanel.Size = new System.Drawing.Size(284, 86);
+            this.GeneralControlsTableLayoutPanel.TabIndex = 0;
+            // 
+            // kryptonButton1
+            // 
+            this.kryptonButton1.AutoSize = true;
+            this.kryptonButton1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.kryptonButton1.Enabled = false;
+            this.kryptonButton1.Location = new System.Drawing.Point(145, 3);
+            this.kryptonButton1.Name = "kryptonButton1";
+            this.kryptonButton1.Size = new System.Drawing.Size(134, 22);
+            this.kryptonButton1.TabIndex = 1;
+            this.kryptonButton1.Values.Text = "Another button...";
+            // 
+            // DLLastUpdateButton
+            // 
+            this.DLLastUpdateButton.AutoSize = true;
+            this.DLLastUpdateButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DLLastUpdateButton.Enabled = false;
+            this.DLLastUpdateButton.Location = new System.Drawing.Point(5, 3);
+            this.DLLastUpdateButton.Name = "DLLastUpdateButton";
+            this.DLLastUpdateButton.Size = new System.Drawing.Size(134, 22);
+            this.DLLastUpdateButton.TabIndex = 0;
+            this.DLLastUpdateButton.Values.Text = "DL Last Update";
+            this.DLLastUpdateButton.Click += new System.EventHandler(this.DLLastUpdateButton_Click);
             // 
             // SplitContainer3
             // 
@@ -770,7 +821,6 @@ namespace FTPManager
             // DownloadDateColumn
             // 
             this.DownloadDateColumn.Text = "Last Download Date";
-            this.DownloadDateColumn.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.DownloadDateColumn.Width = 320;
             // 
             // FileExplorerImageList
@@ -861,8 +911,11 @@ namespace FTPManager
             this.FTPListGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.FTPListDataGridView)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox.Panel)).EndInit();
+            this.GeneralControlsGroupBox.Panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox)).EndInit();
             this.GeneralControlsGroupBox.ResumeLayout(false);
+            this.GeneralControlsTableLayoutPanel.ResumeLayout(false);
+            this.GeneralControlsTableLayoutPanel.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer3.Panel1)).EndInit();
             this.SplitContainer3.Panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer3.Panel2)).EndInit();
@@ -960,6 +1013,9 @@ namespace FTPManager
         private ButtonSpecHeaderGroup DownloadButton;
         internal ButtonSpecHeaderGroup StopButton;
         private System.Windows.Forms.ColumnHeader DownloadDateColumn;
+        private KryptonButton DLLastUpdateButton;
+        private KryptonButton kryptonButton1;
+        private System.Windows.Forms.TableLayoutPanel GeneralControlsTableLayoutPanel;
 
     }
 }
