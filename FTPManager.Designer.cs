@@ -51,7 +51,7 @@ namespace FTPManager
             this.FTPListDataGridView = new ComponentFactory.Krypton.Toolkit.KryptonDataGridView();
             this.GeneralControlsGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.GeneralControlsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
-            this.kryptonButton1 = new ComponentFactory.Krypton.Toolkit.KryptonButton();
+            this.SynchronizeLocalFileButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.DLLastUpdateButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.SplitContainer3 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ServerInfoGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
@@ -358,7 +358,7 @@ namespace FTPManager
             this.GeneralControlsTableLayoutPanel.ColumnCount = 2;
             this.GeneralControlsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.GeneralControlsTableLayoutPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.GeneralControlsTableLayoutPanel.Controls.Add(this.kryptonButton1, 1, 0);
+            this.GeneralControlsTableLayoutPanel.Controls.Add(this.SynchronizeLocalFileButton, 1, 0);
             this.GeneralControlsTableLayoutPanel.Controls.Add(this.DLLastUpdateButton, 0, 0);
             this.GeneralControlsTableLayoutPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.GeneralControlsTableLayoutPanel.Location = new System.Drawing.Point(0, 0);
@@ -371,16 +371,17 @@ namespace FTPManager
             this.GeneralControlsTableLayoutPanel.Size = new System.Drawing.Size(284, 86);
             this.GeneralControlsTableLayoutPanel.TabIndex = 0;
             // 
-            // kryptonButton1
+            // SynchronizeLocalFileButton
             // 
-            this.kryptonButton1.AutoSize = true;
-            this.kryptonButton1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.kryptonButton1.Enabled = false;
-            this.kryptonButton1.Location = new System.Drawing.Point(145, 3);
-            this.kryptonButton1.Name = "kryptonButton1";
-            this.kryptonButton1.Size = new System.Drawing.Size(134, 22);
-            this.kryptonButton1.TabIndex = 1;
-            this.kryptonButton1.Values.Text = "Another button...";
+            this.SynchronizeLocalFileButton.AutoSize = true;
+            this.SynchronizeLocalFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.SynchronizeLocalFileButton.Enabled = false;
+            this.SynchronizeLocalFileButton.Location = new System.Drawing.Point(145, 3);
+            this.SynchronizeLocalFileButton.Name = "SynchronizeLocalFileButton";
+            this.SynchronizeLocalFileButton.Size = new System.Drawing.Size(134, 22);
+            this.SynchronizeLocalFileButton.TabIndex = 1;
+            this.SynchronizeLocalFileButton.Values.Text = "Synchronize With Local File";
+            this.SynchronizeLocalFileButton.Click += new System.EventHandler(this.SynchronizeLocalFileButton_Click);
             // 
             // DLLastUpdateButton
             // 
@@ -391,7 +392,7 @@ namespace FTPManager
             this.DLLastUpdateButton.Name = "DLLastUpdateButton";
             this.DLLastUpdateButton.Size = new System.Drawing.Size(134, 22);
             this.DLLastUpdateButton.TabIndex = 0;
-            this.DLLastUpdateButton.Values.Text = "DL Last Update";
+            this.DLLastUpdateButton.Values.Text = "DL Last Updates";
             this.DLLastUpdateButton.Click += new System.EventHandler(this.DLLastUpdateButton_Click);
             // 
             // SplitContainer3
@@ -1014,7 +1015,7 @@ namespace FTPManager
         internal ButtonSpecHeaderGroup StopButton;
         private System.Windows.Forms.ColumnHeader DownloadDateColumn;
         private KryptonButton DLLastUpdateButton;
-        private KryptonButton kryptonButton1;
+        private KryptonButton SynchronizeLocalFileButton;
         private System.Windows.Forms.TableLayoutPanel GeneralControlsTableLayoutPanel;
 
     }

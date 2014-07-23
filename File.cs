@@ -27,7 +27,7 @@ namespace FTPManager
             _Name = String.Empty;
             _Path = String.Empty;
             _Size = 0;
-            _Timestamp = new DateTime();
+            _Timestamp = new DateTime(1959, 1, 1, 0, 0, 0);
         }
 
         public File(string name, string path, int size, DateTime timestamp)

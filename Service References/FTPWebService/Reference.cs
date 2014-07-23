@@ -48,9 +48,9 @@ namespace FTPManager.FTPWebService {
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
         int Get_file_id(string fileName, int regionID);
         
-        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_files_modification_date", ReplyAction="*")]
+        [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Get_files_download_date", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        System.Data.DataSet Get_files_modification_date(int regionId);
+        System.Data.DataSet Get_files_download_date(int regionId);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add_file", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
@@ -58,7 +58,7 @@ namespace FTPManager.FTPWebService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/Add_download_per_region", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
-        object Add_download_per_region(int regionID, int fileID, string modificationDate);
+        object Add_download_per_region(int regionID, int fileID, string downloadDate);
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -120,16 +120,16 @@ namespace FTPManager.FTPWebService {
             return base.Channel.Get_file_id(fileName, regionID);
         }
         
-        public System.Data.DataSet Get_files_modification_date(int regionId) {
-            return base.Channel.Get_files_modification_date(regionId);
+        public System.Data.DataSet Get_files_download_date(int regionId) {
+            return base.Channel.Get_files_download_date(regionId);
         }
         
         public object Add_file(int regionID, string name) {
             return base.Channel.Add_file(regionID, name);
         }
         
-        public object Add_download_per_region(int regionID, int fileID, string modificationDate) {
-            return base.Channel.Add_download_per_region(regionID, fileID, modificationDate);
+        public object Add_download_per_region(int regionID, int fileID, string downloadDate) {
+            return base.Channel.Add_download_per_region(regionID, fileID, downloadDate);
         }
     }
 }

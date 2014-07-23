@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
+using System.Windows.Forms;
 
 namespace FTPManager
 {
@@ -25,6 +26,7 @@ namespace FTPManager
         private int _BufferSize = 2048;
         private double _TotalSize;
         private string _DownloadedFileTarget;
+        private List<string> _DownloadedFilesTarget;
 
         #endregion
 
@@ -32,6 +34,11 @@ namespace FTPManager
         /**************************************************** Constructor ****************************************************/
 
         #region Constructor
+
+        public FtpAPI()
+        {
+            _DownloadedFilesTarget = new List<string>();
+        }
 
         #endregion
 
@@ -45,10 +52,28 @@ namespace FTPManager
 
         public void GetDirectoryList(Directory directory, BackgroundWorker worker, DoWorkEventArgs e)
         {
+            /* Set parameters and return values */
+            List<object> parameters = e.Argument as List<object>;
             List<object> returnArguments = new List<object>();
-            if (directory.Get_IsRoot())
-                returnArguments.Add("GetDir");
-            else returnArguments.Add("ChDir");
+
+            if (((string)parameters[0]).Equals("GetDir"))
+            {
+                if (directory.Get_IsRoot())
+                    returnArguments.Add("GetDir");
+            }
+            else if (((string)parameters[0]).Equals("DlLastUp"))
+            {
+                returnArguments.Add("DlLastUp");
+            }
+            else if (((string)parameters[0]).Equals("SyncLF"))
+            {
+                returnArguments.Add("SyncLF");
+            }
+            else if (((string)parameters[0]).Equals("ChDir"))
+            {
+                returnArguments.Add("ChDir");
+            }
+
 
             if (directory.Get_FoldersList().Count == 0 && directory.Get_FilesList().Count == 0)
             {
@@ -134,12 +159,6 @@ namespace FTPManager
                                             stringRaw = stringRaw.Substring(0, stringRaw.Length - 1);
                                         string[] split = stringRaw.Split('/');
 
-                                        //string[] split = node.InnerText.Split('/');
-                                        //if (!String.IsNullOrEmpty(split[split.Length - 1]))
-                                        //    content.Add(split[split.Length - 1]);
-                                        //else if (split.Length - 2 >= 0)
-                                        //    content.Add(split[split.Length - 2]);
-
                                         /* Parse timestamp and size, and then fill directory object */
                                         ParseSizeAndTimestamp(directory, split[split.Length - 1], lines);
                                     }
@@ -150,11 +169,6 @@ namespace FTPManager
                                         if (stringRaw[stringRaw.Length - 1] == '/')
                                             stringRaw = stringRaw.Substring(0, stringRaw.Length - 1);
                                         string[] split = stringRaw.Split('/');
-
-                                        //if (!String.IsNullOrEmpty(split[split.Length - 1]))
-                                        //    content.Add(split[split.Length - 1]);
-                                        //else if (split.Length - 2 >= 0)
-                                        //    content.Add(split[split.Length - 2]);
 
                                         /* Parse timestamp and size, and then fill directory object */
                                         ParseSizeAndTimestamp(directory, split[split.Length - 1], lines);
@@ -299,7 +313,6 @@ namespace FTPManager
             }
 
             /* Else, create a directory */
-            //if (String.IsNullOrEmpty(Path.GetExtension(filePath)) && !fileName.Equals("Parent Directory") && !fileName.Equals("Root Directory") && !_Host.Contains(fileName))
             else if (!fileName.Equals("Parent Directory") 
                 && !fileName.Equals("Root Directory")
                 && !_Host.Replace("%20", " ").Contains(fileName) 
@@ -314,15 +327,18 @@ namespace FTPManager
          * Download file *
         \*****************/
 
-        public void DownloadFile(string remoteFilePath, string localFilePath, BackgroundWorker worker, DoWorkEventArgs e)
+        public void DownloadFile(string remoteFilePath, string localFilePath, double numberOfFiles, BackgroundWorker worker, DoWorkEventArgs e)
         {
+            //List<object> parameters = e.Argument as List<object>;
             List<object> returnArguments = new List<object>();
-            returnArguments.Add("Download");
+                returnArguments.Add("Download");
 
             try
             {
-                _DownloadedFileTarget = localFilePath;
-                worker.ReportProgress(0);
+                //_DownloadedFileTarget = localFilePath;
+                _DownloadedFilesTarget.Add(localFilePath);
+                if (numberOfFiles == 1)
+                    worker.ReportProgress(0);
 
                 /* Instanciate FTP request */
                 _FtpRequest = (FtpWebRequest)FtpWebRequest.Create(remoteFilePath);
@@ -340,7 +356,7 @@ namespace FTPManager
 
                 /* Establish return communication with ftp server */
                 _FtpResponse = (FtpWebResponse)_FtpRequest.GetResponse();
-                //_FtpStream = _FtpResponse.GetResponseStream();
+
                 using (Stream ftpStream = _FtpResponse.GetResponseStream())
                 {
                     if (worker.CancellationPending)
@@ -371,7 +387,9 @@ namespace FTPManager
                                 bytes += bytesRead;
                                 localFileStream.Write(byteBuffer, 0, bytesRead);
                                 bytesRead = ftpStream.Read(byteBuffer, 0, _BufferSize);
-                                worker.ReportProgress(((int)(((bytes / 1000) / _TotalSize) * 100)));
+
+                                if (numberOfFiles == 1)
+                                    worker.ReportProgress(((int)(((bytes / 1000) / _TotalSize) * 100)));
                             }
                         }
                         catch (Exception ex) { returnArguments.Add(ex.ToString()); }
@@ -387,22 +405,62 @@ namespace FTPManager
 
             catch (Exception ex) { returnArguments.Add(ex.ToString()); }
 
-            worker.ReportProgress(100);
+            if(numberOfFiles == 1)
+                worker.ReportProgress(100);
             e.Result = returnArguments;
+        }
+
+        /********************************\
+         * Download several files       *
+         *    . Case of last update     * 
+         *    . Case of synchronization *
+        \********************************/
+
+        public void DownloadFiles(List<File> filesToDownload, string targetDirectoryPath, BackgroundWorker worker, DoWorkEventArgs e)
+        {
+            string localFilePath = String.Empty;
+
+            worker.ReportProgress(0);
+            /* Set return values */
+            //List<object> returnArguments = new List<object>();
+            //returnArguments.Add("DlLastUpBis");
+            //e.Result = returnArguments;
+
+            for (int i = 0; i < filesToDownload.Count; i++)
+            {
+                if (worker.CancellationPending)
+                {
+                    e.Cancel = true;
+                }
+
+                else
+                {
+                    /* Set local file path */
+                    localFilePath = targetDirectoryPath + "\\" + filesToDownload[i].Get_Name().Replace("%20", " ");
+
+                    /* Download file */
+                    _TotalSize = filesToDownload[i].Get_Size();
+                    DownloadFile(filesToDownload[i].Get_Path(), localFilePath, filesToDownload.Count, worker, e);
+                    worker.ReportProgress((int)((float)(i + 1) / (float)filesToDownload.Count * 100));
+                }
+            }
+            worker.ReportProgress(100);
         }
 
         #endregion
 
         #region Accessors
 
-        public string get_DownloadedFileTarget(){ return _DownloadedFileTarget;}
+        public string Get_DownloadedFileTarget(){ return _DownloadedFileTarget;}
+        public void Reset_DownloadedFilesTarget() { _DownloadedFilesTarget.Clear(); }
+        public List<string> Get_DownloadedFilesTarget() { return _DownloadedFilesTarget; }
         public void Set_Host(string host)
         { 
             _Host = host;
             if (_Host[_Host.Length - 1].ToString().Contains("/"))
                 _Host = _Host.Remove(_Host.Length - 1, 1);
         }
-        private string Get_Root() { return _Root; }
+        public string Get_Root() { return _Root; }
         public void Set_Root(string root) { _Root = root; }
         public void Set_User(string user) { _User = user; }
         public void Set_Total_Size(int size) { _TotalSize = size; }
