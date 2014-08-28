@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FTPManager
 {
-    class Region
+    public class Region
     {
         /***************************************************** Variables *****************************************************/
 
@@ -61,12 +61,27 @@ namespace FTPManager
 
         #region Methods
 
+        public void Clone(Region regionToClone)
+        {
+            _Provider = regionToClone.Get_Provider();
+            _FtpHost = regionToClone.Get_FtpHost();
+            _Login = regionToClone.Get_Login();
+            _Password = regionToClone.Get_Password();
+
+            _RegionName = regionToClone.Get_RegionName();
+            _TargetDirectory = regionToClone.Get_TargetDirectory();
+            _FileMask = regionToClone.Get_FileMask();
+            _RecoveryFrequency = regionToClone.Get_RecoveryFrequency();
+            _RecoveryDay = regionToClone.Get_RecoveryDay();
+        }
+
         #endregion
 
         #region Accessors
 
         public String Get_FtpHost() { return _FtpHost; }
         public String Get_RegionName(){return _RegionName;}
+        public void Set_RegionNameForClone() { _RegionName += " (1)"; }
         public String Get_Provider() { return _Provider; }
         public String Get_Login() { return _Login; }
         public String Get_Password() { return _Password; }

@@ -19,18 +19,16 @@ namespace FTPManager
 
         #region Variables
 
-        private FtpAPI _FtpAPI;
-        private Directory _Root;
-        private Directory _CurrentDirectory;
-        private Region _ConnectedRegion;
-        private List<File> _FilesToDownload;
-        private string _LocalFilePath;
-
-        private List<Region> _RegionsList;
-        private ToolTip _TargetPathTooltip;
-        private BackgroundWorker _Worker;
-
-        private ToolTip _SynchronizeButtonTooltip;
+        private FtpAPI _FtpAPI;                    // FTP API
+        private Directory _Root;                   // Root directory.
+        private Directory _CurrentDirectory;       // Current directory.
+        private Region _ConnectedRegion;           // Connected region.
+        private List<File> _FilesToDownload;       // List of files to download.
+        private string _LocalFilePath;             // Local path (where download the file)
+        private List<Region> _RegionsList;         // List of regions (fetched from the db).
+        private ToolTip _TargetPathTooltip;        // Tooltpip.
+        private BackgroundWorker _Worker;          // Background worker.
+        private ToolTip _SynchronizeButtonTooltip; // Another tooltip.
 
         #endregion
 
@@ -58,7 +56,8 @@ namespace FTPManager
             EditButton.Click += EditButton_Click;
 
             GetRegions();
-            FillFtpListDataGridView();
+            FillFTPTreeView(); //FillFtpListDataGridView();
+            
 
             ResetSummaryTextboxesAndLabels();
 
@@ -111,6 +110,7 @@ namespace FTPManager
             _TargetPathTooltip.SetToolTip(TargetDirectoryButton, "");
             TargetDirectoryButton.Tag = true;
             TargetDirectoryButton.Visible = true;
+            TargetDirectoryLabel2.Visible = false;
             FileMaskLabel2.Visible = false;
             FileMaskTextBox.Visible = true;
             RecoveryFrequencyLabel2.Visible = false;
@@ -129,18 +129,18 @@ namespace FTPManager
             ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
             DLLastUpdateButton.Enabled = false;
             SynchronizeLocalFileButton.Enabled = false;
-            FTPListDataGridView.ClearSelection();
+            FTPTreeView.SelectedNode = null;//FTPListDataGridView.ClearSelection();
         }
 
         private void BeginEditFTP()
         {
-            if (FTPListDataGridView.CurrentCell.RowIndex != -1)
-            {
+            //if (FTPListDataGridView.CurrentCell.RowIndex != -1)
+            //{
                 /* Retrieve region information */
                 Region regionToUpdate = new Region();
                 foreach (Region element in _RegionsList)
                 {
-                    if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value.ToString()))
+                    if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString())) //if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value.ToString()))
                     {
                         regionToUpdate = element;
                         break;
@@ -166,6 +166,7 @@ namespace FTPManager
                 _TargetPathTooltip.SetToolTip(TargetDirectoryButton, regionToUpdate.Get_TargetDirectory());
                 TargetDirectoryButton.Tag = true;
                 TargetDirectoryButton.Visible = true;
+                TargetDirectoryLabel2.Visible = false;
                 FileMaskLabel2.Visible = false;
                 FileMaskTextBox.Visible = true;
                 FileMaskTextBox.Text = regionToUpdate.Get_FileMask();
@@ -185,8 +186,8 @@ namespace FTPManager
                 ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
                 DLLastUpdateButton.Enabled = false;
                 SynchronizeLocalFileButton.Enabled = false;
-                FTPListDataGridView.ClearSelection();
-            }
+                FTPTreeView.SelectedNode = null; //FTPListDataGridView.ClearSelection();
+            //}
         }
 
         /************************************\
@@ -205,6 +206,8 @@ namespace FTPManager
             TargetDirectoryButton.Tag = false;
             ServerAddressLabel2.Visible = true;
             ServerAddressTextBox.Visible = false;
+            TargetDirectoryButton.Visible = false;
+            TargetDirectoryLabel2.Visible = true;
             RegionNameLabel2.Visible = true;
             RegionNameTextBox.Visible = false;
             ProviderLabel2.Visible = true;
@@ -225,7 +228,7 @@ namespace FTPManager
             DLLastUpdateButton.Enabled = false;
             SynchronizeLocalFileButton.Enabled = false;
 
-            FTPListDataGridView.ClearSelection();
+            FTPTreeView.SelectedNode = null; //FTPListDataGridView.ClearSelection();
         }
 
         /********************************************************\
@@ -288,8 +291,8 @@ namespace FTPManager
                     _RegionsList.Add(new Region(ProviderTextBox.Text, ServerAddressTextBox.Text, LoginTextBox.Text, PasswordTextBox.Text, RegionNameTextBox.Text, _TargetPathTooltip.GetToolTip(TargetDirectoryButton), FileMaskTextBox.Text, frequency, day));
 
                     /* Refresh List of FTP */
-                    FTPListDataGridView.DataSource = null;
-                    FillFtpListDataGridView();
+                    //FTPListDataGridView.DataSource = null;
+                    FillFTPTreeView();//FillFtpListDataGridView();
 
                     /* Display result */
                     KryptonMessageBox.Show("FTP Created !", "Saved",
@@ -351,8 +354,8 @@ namespace FTPManager
                     _RegionsList.Add(new Region(ProviderTextBox.Text, ServerAddressTextBox.Text, LoginTextBox.Text, PasswordTextBox.Text, RegionNameTextBox.Text, _TargetPathTooltip.GetToolTip(TargetDirectoryButton), FileMaskTextBox.Text, RecoveryFrequencyComboBox.Text, RecoveryDayComboBox.Text));
 
                     /* Refresh List of FTP */
-                    FTPListDataGridView.DataSource = null;
-                    FillFtpListDataGridView();
+                    //FTPListDataGridView.DataSource = null;
+                    FillFTPTreeView();//FillFtpListDataGridView();
 
                     /* Display result */
                     KryptonMessageBox.Show("FTP updated !", "Updated",
@@ -416,12 +419,12 @@ namespace FTPManager
             FTPWebService.ftpSoapClient service = new FTPWebService.ftpSoapClient();
 
             /* Delete region from DB */
-            service.Delete_region(FTPListDataGridView.CurrentCell.Value.ToString());
+            service.Delete_region(FTPTreeView.SelectedNode.Text.ToString()); //service.Delete_region(FTPListDataGridView.CurrentCell.Value.ToString());
 
             /* Delete region in list of region */
             foreach (Region element in _RegionsList)
             {
-                if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value.ToString()))
+                if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString())) //if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value.ToString()))
                 {
                     _RegionsList.Remove(element);
                     break;
@@ -429,12 +432,91 @@ namespace FTPManager
             }
 
             /* Refresh DataGridView */
-            FTPListDataGridView.DataSource = null;
-            FillFtpListDataGridView();
-            FTPListDataGridView.ClearSelection();
+            //FTPListDataGridView.DataSource = null;
+            FillFTPTreeView();//FillFtpListDataGridView();
+            FTPTreeView.SelectedNode = null;//FTPListDataGridView.ClearSelection();
 
             /* CLose service */
             service.Close();
+
+            /* Display result */
+            KryptonMessageBox.Show("Region Deleted !", "Deleted",
+                 MessageBoxButtons.OK,
+                 MessageBoxIcon.Information);
+        }
+
+        /****************************************\
+         * Duplicate contextMenuItemClick event *
+         *    - Duplicate selected region       *
+        \****************************************/
+
+        private void DuplicateToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (FTPTreeView.SelectedNode != null && FTPTreeView.SelectedNode.Nodes.Count == 0)
+            {
+                Region duplicatedRegion = new Region();
+
+                /* Create service */
+                FTPWebService.ftpSoapClient service = new FTPWebService.ftpSoapClient();
+
+                /* Get region to duplicate */
+                Region regionToDuplicate = new Region();
+                foreach (Region element in _RegionsList)
+                {
+                    if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString())) //if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
+                    {
+                        regionToDuplicate = element;
+                        break;
+                    }
+                }
+
+                /* Clone it */
+                duplicatedRegion.Clone(regionToDuplicate);
+                duplicatedRegion.Set_RegionNameForClone();
+
+                /* Add it to the list of regions */
+                _RegionsList.Add(duplicatedRegion);
+
+                /* Add it in DB */
+                int serverID = service.Get_server_id(duplicatedRegion.Get_Provider(), duplicatedRegion.Get_FtpHost(), duplicatedRegion.Get_Login(), duplicatedRegion.Get_Password());
+                int idFrequency;
+                int idDay;
+                switch (duplicatedRegion.Get_RecoveryFrequency())
+                {
+                    case "None": idFrequency = 5; break;
+                    case "Daily": idFrequency = 1; break;
+                    case "Weekly": idFrequency = 2; break;
+                    case "Monthly": idFrequency = 3; break;
+                    case "Yearly": idFrequency = 4; break;
+                    default: idFrequency = 5; break;
+                }
+                switch (duplicatedRegion.Get_RecoveryDay())
+                {
+                    case "None": idDay = 8; break;
+                    case "Monday": idDay = 1; break;
+                    case "Tuesday": idDay = 2; break;
+                    case "Wednesday": idDay = 3; break;
+                    case "Thursday": idDay = 4; break;
+                    case "Friday": idDay = 5; break;
+                    case "Saturday": idDay = 6; break;
+                    case "Sunday": idDay = 7; break;
+                    default: idDay = 8; break;
+                }
+                service.Add_region(serverID, duplicatedRegion.Get_RegionName(), duplicatedRegion.Get_FileMask(), duplicatedRegion.Get_TargetDirectory(), idFrequency, idDay);
+
+                /* Refresh List of FTP */
+                //FTPListDataGridView.DataSource = null;
+                FillFTPTreeView(); //FillFtpListDataGridView();
+                FTPTreeView.SelectedNode = null; //FTPListDataGridView.ClearSelection();
+
+                /* Display result */
+                KryptonMessageBox.Show("Region Duplicated !", "Cloned",
+                     MessageBoxButtons.OK,
+                     MessageBoxIcon.Information);
+
+                /* Close service */
+                service.Close();
+            }
         }
 
         /************************************\
@@ -447,7 +529,7 @@ namespace FTPManager
             if ((Boolean)TargetDirectoryButton.Tag == true)
             {
                 FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
-                openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
+                openFolderDialog.SelectedPath = @"V:\DONNEES\INTERNATIONAL\DATA";
 
                 DialogResult result = openFolderDialog.ShowDialog();
                 if (result == DialogResult.OK)
@@ -488,6 +570,7 @@ namespace FTPManager
             _TargetPathTooltip.SetToolTip(TargetDirectoryButton, "");
             TargetDirectoryButton.Tag = false;
             TargetDirectoryButton.Visible = false;
+            TargetDirectoryLabel2.Text = "";
             OkPictureBox.Tag = false;
         }
 
@@ -506,12 +589,17 @@ namespace FTPManager
 
         private void ConnectButton_Click(object sender, EventArgs e)
         {
+            Connect();
+        }
+
+        private void Connect()
+        {
             ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
             StopButton.Enabled = ButtonEnabled.True;
             DLLastUpdateButton.Enabled = false;
             SynchronizeLocalFileButton.Enabled = false;
             FileExplorerListView.SetSortIcon(0, SortOrder.None);
-            FileExplorerListView.ListViewItemSorter = new ListViewItemComparer(0,SortOrder.Ascending);
+            FileExplorerListView.ListViewItemSorter = new ListViewItemComparer(0, SortOrder.Ascending);
 
             DirFileCounterLabel.Text = "";
 
@@ -522,7 +610,7 @@ namespace FTPManager
             Region regionToConnect = new Region();
             foreach (Region element in _RegionsList)
             {
-                if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
+                if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString()))//if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
                 {
                     regionToConnect = element;
                     break;
@@ -539,7 +627,7 @@ namespace FTPManager
             _Root.Set_IsRoot(true);
             _Root.Set_Name("Root");
             _Root.Set_Path(regionToConnect.Get_FtpHost());
-            
+
 
             /* Start backgroundworker to get files*/
             FTPBrowserHeaderGroup.ValuesPrimary.Heading = "FTP Browser (" + regionToConnect.Get_RegionName() + ") :";
@@ -638,9 +726,11 @@ namespace FTPManager
             }
         }
 
-        /*******************************************\
-         * Download last update of selected region *
-        \*******************************************/
+        /*******************************************************************************\
+         * Download last update of selected region. 2 methods :                        *
+         *    - The first one is when the user click on the button to dl last updates. *
+         *    - The second one is part of the Analytics batch                          *
+        \*******************************************************************************/
 
         private void DLLastUpdateButton_Click(object sender, EventArgs e)
         {
@@ -664,7 +754,7 @@ namespace FTPManager
                 Region regionToConnect = new Region();
                 foreach (Region element in _RegionsList)
                 {
-                    if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
+                    if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString()))//if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
                     {
                         regionToConnect = element;
                         break;
@@ -681,7 +771,7 @@ namespace FTPManager
                 _Root.Set_Name("Root");
                 _Root.Set_Path(regionToConnect.Get_FtpHost());
 
-                /* Start backgroundworker to get files*/
+                /* Start backgroundworker to get files */
                 LogcatRichTextBox.AppendText("Connecting to " + regionToConnect.Get_RegionName() + " : " + regionToConnect.Get_FtpHost() + "... ");
                 List<object> arguments = new List<object>();
                 arguments.Add("DlLastUp");
@@ -689,6 +779,36 @@ namespace FTPManager
             }
         }
 
+        public void DLLastUpdate(Region regionToConnect)
+        {
+            if (!_Worker.IsBusy)
+            {
+                StopButton.Enabled = ButtonEnabled.True;
+
+                /* Clear list of files to dl */
+                _FilesToDownload.Clear();
+
+                /* Reset root */
+                _Root = new Directory();
+
+                /* Set credentials & current folder */
+                _ConnectedRegion = regionToConnect;
+                _FtpAPI.Set_Host(regionToConnect.Get_FtpHost());
+                _FtpAPI.Set_Root(regionToConnect.Get_FtpHost());
+                _FtpAPI.Set_User(regionToConnect.Get_Login());
+                _FtpAPI.Set_Password(regionToConnect.Get_Password());
+                _Root.Set_IsRoot(true);
+                _Root.Set_Name("Root");
+                _Root.Set_Path(regionToConnect.Get_FtpHost());
+
+
+                /* Start backgroundworker to get files */
+                //LogcatRichTextBox.AppendText("Connecting to " + regionToConnect.Get_RegionName() + " : " + regionToConnect.Get_FtpHost() + "... ");
+                //List<object> arguments = new List<object>();
+                //arguments.Add("DlLastUp");
+                //_Worker.RunWorkerAsync(arguments);
+            }
+        }
 
         /**********************************************************************\
          * Synchronize local file with FTP server                             *
@@ -708,7 +828,7 @@ namespace FTPManager
                 Region regionToConnect = new Region();
                 foreach (Region element in _RegionsList)
                 {
-                    if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
+                    if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString()))//if (element.Get_RegionName().Equals(FTPListDataGridView.CurrentCell.Value))
                     {
                         regionToConnect = element;
                         break;
@@ -802,7 +922,7 @@ namespace FTPManager
          * Add download historic on DB *
         \*******************************/
 
-        private void AddDownloadLog()
+        public void AddDownloadLog()
         {
             int regionID = 0;
             int fileID = 0;
@@ -851,42 +971,88 @@ namespace FTPManager
             catch (Exception ex) { KryptonMessageBox.Show(ex.ToString()); }
         }
 
-        /**********************************\
-         * Fill DataGridView with regions *
-        \**********************************/
+        /*************************************\
+         * Fill FillFTPTreeView with regions *
+        \*************************************/
 
-        private void FillFtpListDataGridView()
+        private void FillFTPTreeView()
         {
-            /* Create dataTable & add column */
-            DataTable dataTable = new DataTable();
-            DataColumn nameCol = dataTable.Columns.Add("name", typeof(string));
+            List<string> regions = new List<string>();
+            List<string> group = new List<string>();
+            string groupName = String.Empty;
+            string[] split;
 
-            /* Fill dataTable */
+            FTPTreeView.Nodes.Clear();
+
+            /* Fill list of region names */
             foreach (Region element in _RegionsList)
+                regions.Add(element.Get_RegionName());
+            regions.Sort();
+
+            /* Construct TreeView */
+            foreach (string region in regions)
             {
-                DataRow row = dataTable.NewRow();
-                row["name"] = element.Get_RegionName();
-                dataTable.Rows.Add(row);
+                /* The goal is to group by the first word of the region name */
+                split = region.Split(' ');
+
+                /* Primer */
+                if (String.IsNullOrEmpty(groupName))
+                {
+                    groupName = split[0];
+                    group.Add(region);
+                }
+
+                /* If analyzed region is not part of the group, create new one and "encapsulate" previous group, then add it to the TV */
+                else if (!split[0].Equals(groupName))
+                {
+                    if (group.Count > 1)
+                    {
+                        TreeNode node = new TreeNode();
+                        node.Text = groupName;
+                        foreach (string groupPart in group)
+                            node.Nodes.Add(groupPart);
+                        FTPTreeView.Nodes.Add(node);
+                        group.Clear();
+                    }
+                    else if (group.Count == 1)
+                    {
+                        FTPTreeView.Nodes.Add(group[0]);
+                        group.Clear();
+                    }
+                    groupName = split[0];
+                    group.Add(region);
+                }
+
+                /* Else, region is part of the group, add it to the group */
+                else group.Add(region);
             }
 
-            /* Set dataTable as a DataSource for the DataGridView */
-            FTPListDataGridView.DataSource = dataTable;
-            FTPListDataGridView.Columns["name"].AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
-            FTPListDataGridView.Columns["name"].HeaderText = "Name";
-
-            FTPListDataGridView.Sort(FTPListDataGridView.Columns[0], ListSortDirection.Ascending);
+            /* Treat last group */
+            if (group.Count > 1)
+            {
+                TreeNode node = new TreeNode();
+                node.Text = groupName;
+                foreach (string groupPart in group)
+                    node.Nodes.Add(groupPart);
+                FTPTreeView.Nodes.Add(node);
+            }
+            else if (group.Count == 1)
+                FTPTreeView.Nodes.Add(group[0]);
         }
 
         /***********************************\
-         * DatagridView Cell click event : *
+         * TreeView Node click event :     *
          *      - display FTP summary      *
         \***********************************/
 
-        private void FTPListDataGridView_CellClick(object sender, DataGridViewCellEventArgs e)
+        private void FTPTreeView_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.RowIndex != -1)
+            TreeView treeView = ((TreeView)(sender));
+            treeView.SelectedNode = treeView.GetNodeAt(e.X, e.Y);
+
+            if (treeView.SelectedNode != null && treeView.SelectedNode.Nodes.Count == 0) // Process only nodes without childs
             {
-                DownloadButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False; ;
+                DownloadButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
 
                 if ((Boolean)TargetDirectoryButton.Tag == false) // if no edition mode
                 {
@@ -902,7 +1068,7 @@ namespace FTPManager
 
                 foreach (Region element in _RegionsList)
                 {
-                    if (element.Get_RegionName().Equals(FTPListDataGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value))
+                    if (element.Get_RegionName().Equals(FTPTreeView.SelectedNode.Text.ToString()))
                     {
                         ServerAddressLabel2.Text = element.Get_FtpHost();
                         RegionNameLabel2.Text = element.Get_RegionName();
@@ -912,21 +1078,39 @@ namespace FTPManager
                         FileMaskLabel2.Text = element.Get_FileMask();
                         RecoveryFrequencyLabel2.Text = element.Get_RecoveryFrequency();
                         RecoveryDayLabel2.Text = element.Get_RecoveryDay();
-                        TargetDirectoryButton.Visible = true;
+                        TargetDirectoryButton.Visible = false;
+                        TargetDirectoryLabel2.Text = element.Get_TargetDirectory();
                         _TargetPathTooltip.SetToolTip(TargetDirectoryButton, element.Get_TargetDirectory());
                         break;
                     }
                 }
             }
+
+            else
+            {
+                DownloadButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                ConnectButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                DeleteButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                EditButton.Enabled = ComponentFactory.Krypton.Toolkit.ButtonEnabled.False;
+                SynchronizeLocalFileButton.Enabled = false;
+                DLLastUpdateButton.Enabled = false;
+            }
         }
 
-        /**********************************************\
-         * Clear selection after databinding complete *
-        \**********************************************/
+        /**************************************\
+         * TreeView Node double click event : *
+         *      - connect to FTP              *
+        \**************************************/
 
-        private void FTPListDataGridView_DataBindingComplete(object sender, DataGridViewBindingCompleteEventArgs e)
+        private void FTPTreeView_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            FTPListDataGridView.ClearSelection();
+            TreeView treeView = ((TreeView)(sender));
+            treeView.SelectedNode = treeView.GetNodeAt(e.X, e.Y);
+
+            if (treeView.SelectedNode != null && treeView.SelectedNode.Nodes.Count == 0 && (Boolean)TargetDirectoryButton.Tag == false && !_Worker.IsBusy) // Process only nodes without childs, and if a region is not being edited, and if worker is not busy
+            {
+                Connect();
+            }
         }
 
         /*******************************************\
@@ -1030,7 +1214,13 @@ namespace FTPManager
                 FileExplorerListView.Items.AddRange(new ListViewItem[] { item });
             }
 
-            /* Re initialize some graphics */
+            /* Sort by modification date */
+            //FileExplorerListView.ListViewItemSorter = new ListViewItemComparer(e.Column, FileExplorerListView.Sorting);
+
+            FileExplorerListView.Sorting = SortOrder.Descending;
+            FileExplorerListView.SetSortIcon(2, SortOrder.Descending);
+            FileExplorerListView.ListViewItemSorter = new ListViewItemComparer(2, FileExplorerListView.Sorting);
+
         }
 
         /************************************\
@@ -1109,18 +1299,48 @@ namespace FTPManager
          *    . Fill FilesToDownload                   *
         \***********************************************/
 
-        private void SetFilesToDownload()
+        public void SetFilesToDownload()
         {
             /* Get Last file, according to if there is a mask or not */
             /* Get matching files */
             File referenceFile = new File();
             List<File> matchingFiles = new List<File>();
             if (!String.IsNullOrEmpty(_ConnectedRegion.Get_FileMask()))
-                foreach (File element in _CurrentDirectory.Get_FilesList())
+            {
+                string[] maskSplit = _ConnectedRegion.Get_FileMask().Split(new string[] { "|" }, StringSplitOptions.None);
+                if (_ConnectedRegion.Get_FileMask().StartsWith("!"))
                 {
-                    if (element.Get_Name().Replace("%20", " ").Contains(_ConnectedRegion.Get_FileMask()))
-                        matchingFiles.Add(element);
+                    foreach (File element in _CurrentDirectory.Get_FilesList())
+                    {
+                        Boolean valid = true;
+                        foreach (string str in maskSplit)
+                        {
+                            if (element.Get_Name().Replace("%20", " ").Contains(str.Replace("!", "")))
+                            {
+                                valid = false;
+                                break;
+                            }
+                                
+                        }
+                        if(valid)
+                            matchingFiles.Add(element);
+                    }
                 }
+                else
+                {
+                    foreach (File element in _CurrentDirectory.Get_FilesList())
+                    {
+                        foreach (string str in maskSplit)
+                        {
+                            if (element.Get_Name().Replace("%20", " ").Contains(str))
+                            {
+                                matchingFiles.Add(element);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
 
             if (matchingFiles.Count > 0) // Select files to DL among those which match with the mask
             {
@@ -1128,7 +1348,7 @@ namespace FTPManager
                 /* Get first last modified file, as a reference */
                 for (int i = 1; i < matchingFiles.Count; i++)
                 {
-                    if ((DateTime.Compare(referenceFile.Get_Timestamp(), matchingFiles[i].Get_Timestamp()) < 0))
+                    if ((DateTime.Compare(referenceFile.Get_Timestamp().Date, matchingFiles[i].Get_Timestamp().Date) < 0))
                     {
                         referenceFile = matchingFiles[i];
                     }
@@ -1137,20 +1357,20 @@ namespace FTPManager
                 /* Then get all files with the same modification date. */
                 foreach (File element in matchingFiles)
                 {
-                    if (DateTime.Compare(element.Get_Timestamp(), referenceFile.Get_Timestamp()) == 0)
+                    if (DateTime.Compare(element.Get_Timestamp().Date, referenceFile.Get_Timestamp().Date) == 0)
                     {
                         _FilesToDownload.Add(element);
                     }
                 }
             }
 
-            else // Select files to DL among all files (without taking account the mask)
+            else
             {
                 referenceFile = _Root.Get_FilesList()[0];
                 /* Get first last modified file, as a reference */
                 for (int i = 1; i < _CurrentDirectory.Get_FilesList().Count; i++)
                 {
-                    if (DateTime.Compare(referenceFile.Get_Timestamp(), _CurrentDirectory.Get_FilesList()[i].Get_Timestamp()) < 0)
+                    if (DateTime.Compare(referenceFile.Get_Timestamp().Date, _CurrentDirectory.Get_FilesList()[i].Get_Timestamp().Date) < 0)
                     {
                         referenceFile = _CurrentDirectory.Get_FilesList()[i];
                     }
@@ -1159,9 +1379,22 @@ namespace FTPManager
                 /* Then get all files with the same modification date. */
                 foreach (File element in _CurrentDirectory.Get_FilesList())
                 {
-                    if (DateTime.Compare(element.Get_Timestamp(), referenceFile.Get_Timestamp()) == 0)
+                    if (DateTime.Compare(element.Get_Timestamp().Date, referenceFile.Get_Timestamp().Date) == 0)
                     {
                         _FilesToDownload.Add(element);
+                    }
+                }
+            }
+
+            /* If target directory is set, and if file already exists in there, don't download it */
+            if (!String.IsNullOrEmpty(_ConnectedRegion.Get_TargetDirectory()) && System.IO.Directory.Exists(_ConnectedRegion.Get_TargetDirectory()))
+            {
+                for (int i = 0; i < _FilesToDownload.Count; i++)
+                {
+                    if (System.IO.File.Exists(_ConnectedRegion.Get_TargetDirectory() + "\\" + _FilesToDownload[i].Get_Name().Replace("%20", " ")))
+                    {
+                        _FilesToDownload.Remove(_FilesToDownload[i]);
+                        if(i!=0)i--;
                     }
                 }
             }
@@ -1189,7 +1422,7 @@ namespace FTPManager
             {
                 foreach (String fileName in filesName)
                 {
-                    if (element.Get_Name().Replace("%20", " ").Equals(fileName) && DateTime.Compare(element.Get_Timestamp(), lastModificationDateInLocal) > 0) // Means lastModificationDateInLocal > element.Get_Timestamp()
+                    if (element.Get_Name().Replace("%20", " ").Equals(fileName) && DateTime.Compare(element.Get_Timestamp().Date, lastModificationDateInLocal.Date) > 0) // Means lastModificationDateInLocal > element.Get_Timestamp()
                     {
                         lastModificationDateInLocal = element.Get_Timestamp();
                     }
@@ -1200,22 +1433,55 @@ namespace FTPManager
             List<File> filesTmp = new List<File>();
             foreach (File element in _CurrentDirectory.Get_FilesList())
             {
-                if ((DateTime.Compare(element.Get_Timestamp(), lastModificationDateInLocal) > 0 || DateTime.Compare(element.Get_Timestamp(), lastModificationDateInLocal) == 0) && !filesName.Contains(element.Get_Name().Replace("%20"," ")))
+                if ((DateTime.Compare(element.Get_Timestamp().Date, lastModificationDateInLocal.Date) > 0 || DateTime.Compare(element.Get_Timestamp().Date, lastModificationDateInLocal.Date) == 0) && !filesName.Contains(element.Get_Name().Replace("%20", " ")))
                     filesTmp.Add(element);
             }
 
             /* Now get all matching files according to the mask */
             List<File> matchingFiles = new List<File>();
             if (!String.IsNullOrEmpty(_ConnectedRegion.Get_FileMask()))
-                foreach (File element in filesTmp)
-                    if (element.Get_Name().Replace("%20", " ").Contains(_ConnectedRegion.Get_FileMask()))
-                        matchingFiles.Add(element);
+            {
+                string[] maskSplit = _ConnectedRegion.Get_FileMask().Split(new string[] { "|" }, StringSplitOptions.None);
+                if (_ConnectedRegion.Get_FileMask().StartsWith("!"))
+                {
+                    foreach (File element in filesTmp)
+                    {
+                        Boolean valid = true;
+                        foreach (string str in maskSplit)
+                        {
+                            if (element.Get_Name().Replace("%20", " ").Contains(str.Replace("!", "")))
+                            {
+                                valid = false;
+                                break;
+                            }
+                        }
+                        if (valid)
+                            matchingFiles.Add(element);
+                    }
+                }
 
-            if (matchingFiles.Count > 0)
-                foreach (File file in matchingFiles)
-                    _FilesToDownload.Add(file);
+                else
+                {
+                    foreach (File element in filesTmp)
+                    {
+                        foreach (string str in maskSplit)
+                        {
+                            if (element.Get_Name().Replace("%20", " ").Contains(str))
+                            {
+                                matchingFiles.Add(element);
+                                break;
+                            }
+                        }
+                    }
+                }
 
-            else if(filesTmp.Count >0)
+                if(matchingFiles.Count > 0)
+                    foreach (File file in matchingFiles)
+                        _FilesToDownload.Add(file);
+            }
+
+
+           else if(filesTmp.Count >0)
                     foreach (File file in filesTmp)
                         _FilesToDownload.Add(file);
         }
@@ -1310,34 +1576,38 @@ namespace FTPManager
 
                             SetFilesToDownload();
 
-                            if (String.IsNullOrEmpty(_ConnectedRegion.Get_TargetDirectory()) || !System.IO.Directory.Exists(_ConnectedRegion.Get_TargetDirectory()))
+                            if (_FilesToDownload.Count > 0)
                             {
-                                FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
-                                openFolderDialog.RootFolder = Environment.SpecialFolder.Desktop;
-                                openFolderDialog.Description = "Please select target folder";
-                                DialogResult result = openFolderDialog.ShowDialog();
-                                if (result == DialogResult.OK)
+                                if (String.IsNullOrEmpty(_ConnectedRegion.Get_TargetDirectory()) || !System.IO.Directory.Exists(_ConnectedRegion.Get_TargetDirectory()))
                                 {
-                                    arguments.Add(openFolderDialog.SelectedPath);
+                                    FolderBrowserDialog openFolderDialog = new FolderBrowserDialog();
+                                    openFolderDialog.SelectedPath = @"V:\DONNEES\INTERNATIONAL\DATA";
+                                    openFolderDialog.Description = "Please select target folder";
+                                    DialogResult result = openFolderDialog.ShowDialog();
+                                    if (result == DialogResult.OK)
+                                    {
+                                        arguments.Add(openFolderDialog.SelectedPath);
+                                    }
+                                    else
+                                    {
+                                        LogcatRichTextBox.AppendText("Cancelled !\n");
+                                        LogcatRichTextBox.ScrollToCaret();
+                                        ProgressBar.Value = 0;
+                                        ProgressLabel.Text = " - ";
+                                        _FilesToDownload.Clear();
+                                        _FtpAPI.Reset_DownloadedFilesTarget();
+                                        break;
+                                    }
                                 }
                                 else
                                 {
-                                    LogcatRichTextBox.AppendText("Cancelled !\n");
-                                    LogcatRichTextBox.ScrollToCaret();
-                                    ProgressBar.Value = 0;
-                                    ProgressLabel.Text = " - ";
-                                    _FilesToDownload.Clear();
-                                    _FtpAPI.Reset_DownloadedFilesTarget();
-                                    break;
+                                    arguments.Add(_ConnectedRegion.Get_TargetDirectory());
                                 }
-                            }
-                            else
-                            {
-                                arguments.Add(_ConnectedRegion.Get_TargetDirectory());
-                            }
 
-                            StopButton.Enabled = ButtonEnabled.True;
-                            _Worker.RunWorkerAsync(arguments);
+                                StopButton.Enabled = ButtonEnabled.True;
+                                _Worker.RunWorkerAsync(arguments);
+                            }
+                            else LogcatRichTextBox.AppendText("Already up to date !\n");
                             break;
                         case "SyncLF":
                             LogcatRichTextBox.AppendText("Done !\n");
@@ -1403,6 +1673,80 @@ namespace FTPManager
         }
 
         #endregion   
+
+        #region Accessors
+
+        public List<Region> Get_RegionsList()
+        {
+            return _RegionsList;
+        }
+
+        public BackgroundWorker Get_Worker()
+        {
+            return _Worker;
+        }
+
+        public FtpAPI Get_FtpAPI()
+        {
+            return _FtpAPI;
+        }
+
+        public Directory Get_Root()
+        {
+            return _Root;
+        }
+
+        public Directory Get_CurrentDirectory()
+        {
+            return _CurrentDirectory;
+        }
+
+        public void Set_CurrentDirectory(Directory dir)
+        {
+            _CurrentDirectory = dir;
+        }
+
+        public RichTextBox Get_LogCat()
+        {
+            return LogcatRichTextBox;
+        }
+
+        public ToolStripProgressBar Get_ProgressBar()
+        {
+            return ProgressBar;
+        }
+
+        public ToolStripLabel Get_ProgressLabel()
+        {
+            return ProgressLabel;
+        }
+
+        public List<File> Get_FilesToDownload()
+        {
+            return _FilesToDownload;
+        }
+
+        public ToolStripLabel Get_DirFileCounterLabel()
+        {
+            return DirFileCounterLabel;
+        }
+
+        public KryptonHeaderGroup Get_FTPBrowserHeaderGroup()
+        {
+            return FTPBrowserHeaderGroup;
+        }
+
+        public Region Get_ConnectedRegion()
+        {
+            return _ConnectedRegion;
+        }
+
+        public ButtonSpecHeaderGroup Get_StopButton()
+        {
+            return StopButton;
+        }
+
+        #endregion
     }
 
     #region ExtensionClasses

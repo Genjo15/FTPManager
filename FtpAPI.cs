@@ -10,7 +10,7 @@ using System.Windows.Forms;
 
 namespace FTPManager
 {
-    class FtpAPI
+    public class FtpAPI
     {
         /***************************************************** Variables *****************************************************/
 
@@ -25,7 +25,6 @@ namespace FTPManager
         private FtpWebResponse _FtpResponse = null;
         private int _BufferSize = 2048;
         private double _TotalSize;
-        private string _DownloadedFileTarget;
         private List<string> _DownloadedFilesTarget;
 
         #endregion
@@ -201,7 +200,7 @@ namespace FTPManager
             string filePath = String.Empty;
             filePath = _Host + "/" + fileName;
 
-            /* Seek line to parse */
+            /* Select line to parse */
             string lineToParse = String.Empty;
             foreach (string line in lines)
             {
@@ -451,7 +450,6 @@ namespace FTPManager
 
         #region Accessors
 
-        public string Get_DownloadedFileTarget(){ return _DownloadedFileTarget;}
         public void Reset_DownloadedFilesTarget() { _DownloadedFilesTarget.Clear(); }
         public List<string> Get_DownloadedFilesTarget() { return _DownloadedFilesTarget; }
         public void Set_Host(string host)

@@ -31,9 +31,6 @@ namespace FTPManager
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FTPManager));
-            this.MenuStrip = new System.Windows.Forms.MenuStrip();
-            this.FileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.ExitToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.KryptonManager = new ComponentFactory.Krypton.Toolkit.KryptonManager(this.components);
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
             this.FakeLabelForFillingSpace = new System.Windows.Forms.ToolStripStatusLabel();
@@ -48,13 +45,16 @@ namespace FTPManager
             this.DeleteButton = new ComponentFactory.Krypton.Toolkit.ButtonSpecHeaderGroup();
             this.SplitContainer2 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.FTPListGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
-            this.FTPListDataGridView = new ComponentFactory.Krypton.Toolkit.KryptonDataGridView();
+            this.FTPTreeView = new System.Windows.Forms.TreeView();
+            this.ContextMenuStrip = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.DuplicateToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.GeneralControlsGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
             this.GeneralControlsTableLayoutPanel = new System.Windows.Forms.TableLayoutPanel();
             this.SynchronizeLocalFileButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.DLLastUpdateButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.SplitContainer3 = new ComponentFactory.Krypton.Toolkit.KryptonSplitContainer();
             this.ServerInfoGroupBox = new ComponentFactory.Krypton.Toolkit.KryptonGroupBox();
+            this.TargetDirectoryLabel2 = new ComponentFactory.Krypton.Toolkit.KryptonLabel();
             this.BackButton = new ComponentFactory.Krypton.Toolkit.KryptonButton();
             this.RecoveryDayComboBox = new ComponentFactory.Krypton.Toolkit.KryptonComboBox();
             this.RecoveryFrequencyComboBox = new ComponentFactory.Krypton.Toolkit.KryptonComboBox();
@@ -96,7 +96,8 @@ namespace FTPManager
             this.Navigator = new ComponentFactory.Krypton.Navigator.KryptonNavigator();
             this.Logcat = new ComponentFactory.Krypton.Navigator.KryptonPage();
             this.LogcatRichTextBox = new System.Windows.Forms.RichTextBox();
-            this.MenuStrip.SuspendLayout();
+            this.kryptonContextMenuItem1 = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuItem();
+            this.kryptonContextMenuHeading1 = new ComponentFactory.Krypton.Toolkit.KryptonContextMenuHeading();
             this.StatusStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1.Panel1)).BeginInit();
@@ -118,7 +119,7 @@ namespace FTPManager
             ((System.ComponentModel.ISupportInitialize)(this.FTPListGroupBox.Panel)).BeginInit();
             this.FTPListGroupBox.Panel.SuspendLayout();
             this.FTPListGroupBox.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.FTPListDataGridView)).BeginInit();
+            this.ContextMenuStrip.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox.Panel)).BeginInit();
             this.GeneralControlsGroupBox.Panel.SuspendLayout();
@@ -152,31 +153,6 @@ namespace FTPManager
             ((System.ComponentModel.ISupportInitialize)(this.Logcat)).BeginInit();
             this.Logcat.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // MenuStrip
-            // 
-            this.MenuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.MenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.FileToolStripMenuItem});
-            this.MenuStrip.Location = new System.Drawing.Point(0, 0);
-            this.MenuStrip.Name = "MenuStrip";
-            this.MenuStrip.Size = new System.Drawing.Size(900, 24);
-            this.MenuStrip.TabIndex = 0;
-            this.MenuStrip.Text = "menuStrip1";
-            // 
-            // FileToolStripMenuItem
-            // 
-            this.FileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.ExitToolStripMenuItem});
-            this.FileToolStripMenuItem.Name = "FileToolStripMenuItem";
-            this.FileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
-            this.FileToolStripMenuItem.Text = "File";
-            // 
-            // ExitToolStripMenuItem
-            // 
-            this.ExitToolStripMenuItem.Name = "ExitToolStripMenuItem";
-            this.ExitToolStripMenuItem.Size = new System.Drawing.Size(92, 22);
-            this.ExitToolStripMenuItem.Text = "Exit";
             // 
             // KryptonManager
             // 
@@ -223,20 +199,20 @@ namespace FTPManager
             // 
             this.SplitContainer1.Cursor = System.Windows.Forms.Cursors.Default;
             this.SplitContainer1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.SplitContainer1.Location = new System.Drawing.Point(0, 24);
+            this.SplitContainer1.Location = new System.Drawing.Point(0, 0);
             this.SplitContainer1.Name = "SplitContainer1";
             // 
             // SplitContainer1.Panel1
             // 
             this.SplitContainer1.Panel1.Controls.Add(this.FTPsHeaderGroup);
-            this.SplitContainer1.Panel1MinSize = 300;
+            this.SplitContainer1.Panel1MinSize = 200;
             // 
             // SplitContainer1.Panel2
             // 
             this.SplitContainer1.Panel2.Controls.Add(this.SplitContainer3);
             this.SplitContainer1.SeparatorStyle = ComponentFactory.Krypton.Toolkit.SeparatorStyle.HighProfile;
-            this.SplitContainer1.Size = new System.Drawing.Size(900, 554);
-            this.SplitContainer1.SplitterDistance = 300;
+            this.SplitContainer1.Size = new System.Drawing.Size(900, 578);
+            this.SplitContainer1.SplitterDistance = 200;
             this.SplitContainer1.TabIndex = 3;
             // 
             // FTPsHeaderGroup
@@ -256,7 +232,7 @@ namespace FTPManager
             // FTPsHeaderGroup.Panel
             // 
             this.FTPsHeaderGroup.Panel.Controls.Add(this.SplitContainer2);
-            this.FTPsHeaderGroup.Size = new System.Drawing.Size(300, 554);
+            this.FTPsHeaderGroup.Size = new System.Drawing.Size(200, 578);
             this.FTPsHeaderGroup.TabIndex = 0;
             this.FTPsHeaderGroup.ValuesPrimary.Heading = "FTP Manager";
             this.FTPsHeaderGroup.ValuesPrimary.Image = global::FTPManager.Properties.Resources.FTP;
@@ -304,8 +280,8 @@ namespace FTPManager
             // 
             this.SplitContainer2.Panel2.Controls.Add(this.GeneralControlsGroupBox);
             this.SplitContainer2.Panel2.Padding = new System.Windows.Forms.Padding(5, 2, 5, 5);
-            this.SplitContainer2.Size = new System.Drawing.Size(298, 517);
-            this.SplitContainer2.SplitterDistance = 395;
+            this.SplitContainer2.Size = new System.Drawing.Size(198, 541);
+            this.SplitContainer2.SplitterDistance = 413;
             this.SplitContainer2.TabIndex = 0;
             // 
             // FTPListGroupBox
@@ -317,25 +293,38 @@ namespace FTPManager
             // 
             // FTPListGroupBox.Panel
             // 
-            this.FTPListGroupBox.Panel.Controls.Add(this.FTPListDataGridView);
+            this.FTPListGroupBox.Panel.Controls.Add(this.FTPTreeView);
             this.FTPListGroupBox.Panel.Padding = new System.Windows.Forms.Padding(7);
-            this.FTPListGroupBox.Size = new System.Drawing.Size(288, 388);
+            this.FTPListGroupBox.Size = new System.Drawing.Size(188, 406);
             this.FTPListGroupBox.TabIndex = 0;
             this.FTPListGroupBox.Values.Heading = "FTP List :";
             // 
-            // FTPListDataGridView
+            // FTPTreeView
             // 
-            this.FTPListDataGridView.AllowUserToAddRows = false;
-            this.FTPListDataGridView.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.FTPListDataGridView.Location = new System.Drawing.Point(7, 7);
-            this.FTPListDataGridView.Name = "FTPListDataGridView";
-            this.FTPListDataGridView.PaletteMode = ComponentFactory.Krypton.Toolkit.PaletteMode.ProfessionalSystem;
-            this.FTPListDataGridView.ReadOnly = true;
-            this.FTPListDataGridView.RowHeadersVisible = false;
-            this.FTPListDataGridView.Size = new System.Drawing.Size(270, 350);
-            this.FTPListDataGridView.TabIndex = 0;
-            this.FTPListDataGridView.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.FTPListDataGridView_CellClick);
-            this.FTPListDataGridView.DataBindingComplete += new System.Windows.Forms.DataGridViewBindingCompleteEventHandler(this.FTPListDataGridView_DataBindingComplete);
+            this.FTPTreeView.ContextMenuStrip = this.ContextMenuStrip;
+            this.FTPTreeView.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FTPTreeView.Font = new System.Drawing.Font("Calibri", 12.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.FTPTreeView.Location = new System.Drawing.Point(7, 7);
+            this.FTPTreeView.Name = "FTPTreeView";
+            this.FTPTreeView.Size = new System.Drawing.Size(170, 368);
+            this.FTPTreeView.TabIndex = 1;
+            this.FTPTreeView.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.FTPTreeView_NodeMouseDoubleClick);
+            this.FTPTreeView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.FTPTreeView_MouseDown);
+            // 
+            // ContextMenuStrip
+            // 
+            this.ContextMenuStrip.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.ContextMenuStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.DuplicateToolStripMenuItem});
+            this.ContextMenuStrip.Name = "ContextMenuStrip";
+            this.ContextMenuStrip.Size = new System.Drawing.Size(125, 26);
+            // 
+            // DuplicateToolStripMenuItem
+            // 
+            this.DuplicateToolStripMenuItem.Name = "DuplicateToolStripMenuItem";
+            this.DuplicateToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.DuplicateToolStripMenuItem.Text = "Duplicate";
+            this.DuplicateToolStripMenuItem.Click += new System.EventHandler(this.DuplicateToolStripMenuItem_Click);
             // 
             // GeneralControlsGroupBox
             // 
@@ -348,7 +337,7 @@ namespace FTPManager
             // GeneralControlsGroupBox.Panel
             // 
             this.GeneralControlsGroupBox.Panel.Controls.Add(this.GeneralControlsTableLayoutPanel);
-            this.GeneralControlsGroupBox.Size = new System.Drawing.Size(288, 110);
+            this.GeneralControlsGroupBox.Size = new System.Drawing.Size(188, 116);
             this.GeneralControlsGroupBox.TabIndex = 0;
             this.GeneralControlsGroupBox.Values.Heading = "General Controls : ";
             // 
@@ -368,7 +357,7 @@ namespace FTPManager
             this.GeneralControlsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.GeneralControlsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.GeneralControlsTableLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.GeneralControlsTableLayoutPanel.Size = new System.Drawing.Size(284, 86);
+            this.GeneralControlsTableLayoutPanel.Size = new System.Drawing.Size(184, 92);
             this.GeneralControlsTableLayoutPanel.TabIndex = 0;
             // 
             // SynchronizeLocalFileButton
@@ -376,9 +365,9 @@ namespace FTPManager
             this.SynchronizeLocalFileButton.AutoSize = true;
             this.SynchronizeLocalFileButton.Dock = System.Windows.Forms.DockStyle.Fill;
             this.SynchronizeLocalFileButton.Enabled = false;
-            this.SynchronizeLocalFileButton.Location = new System.Drawing.Point(145, 3);
+            this.SynchronizeLocalFileButton.Location = new System.Drawing.Point(95, 3);
             this.SynchronizeLocalFileButton.Name = "SynchronizeLocalFileButton";
-            this.SynchronizeLocalFileButton.Size = new System.Drawing.Size(134, 22);
+            this.SynchronizeLocalFileButton.Size = new System.Drawing.Size(84, 24);
             this.SynchronizeLocalFileButton.TabIndex = 1;
             this.SynchronizeLocalFileButton.Values.Text = "Synchronize With Local File";
             this.SynchronizeLocalFileButton.Click += new System.EventHandler(this.SynchronizeLocalFileButton_Click);
@@ -390,7 +379,7 @@ namespace FTPManager
             this.DLLastUpdateButton.Enabled = false;
             this.DLLastUpdateButton.Location = new System.Drawing.Point(5, 3);
             this.DLLastUpdateButton.Name = "DLLastUpdateButton";
-            this.DLLastUpdateButton.Size = new System.Drawing.Size(134, 22);
+            this.DLLastUpdateButton.Size = new System.Drawing.Size(84, 24);
             this.DLLastUpdateButton.TabIndex = 0;
             this.DLLastUpdateButton.Values.Text = "DL Last Updates";
             this.DLLastUpdateButton.Click += new System.EventHandler(this.DLLastUpdateButton_Click);
@@ -412,7 +401,7 @@ namespace FTPManager
             // SplitContainer3.Panel2
             // 
             this.SplitContainer3.Panel2.Controls.Add(this.SplitContainer4);
-            this.SplitContainer3.Size = new System.Drawing.Size(595, 554);
+            this.SplitContainer3.Size = new System.Drawing.Size(695, 578);
             this.SplitContainer3.SplitterDistance = 170;
             this.SplitContainer3.SplitterWidth = 0;
             this.SplitContainer3.TabIndex = 0;
@@ -425,6 +414,7 @@ namespace FTPManager
             // 
             // ServerInfoGroupBox.Panel
             // 
+            this.ServerInfoGroupBox.Panel.Controls.Add(this.TargetDirectoryLabel2);
             this.ServerInfoGroupBox.Panel.Controls.Add(this.BackButton);
             this.ServerInfoGroupBox.Panel.Controls.Add(this.RecoveryDayComboBox);
             this.ServerInfoGroupBox.Panel.Controls.Add(this.RecoveryFrequencyComboBox);
@@ -453,9 +443,17 @@ namespace FTPManager
             this.ServerInfoGroupBox.Panel.Controls.Add(this.LoginLabel);
             this.ServerInfoGroupBox.Panel.Controls.Add(this.ProviderLabel);
             this.ServerInfoGroupBox.Panel.Controls.Add(this.RegionNameLabel);
-            this.ServerInfoGroupBox.Size = new System.Drawing.Size(585, 160);
+            this.ServerInfoGroupBox.Size = new System.Drawing.Size(685, 160);
             this.ServerInfoGroupBox.TabIndex = 0;
             this.ServerInfoGroupBox.Values.Heading = "Server Info :";
+            // 
+            // TargetDirectoryLabel2
+            // 
+            this.TargetDirectoryLabel2.Location = new System.Drawing.Point(395, 21);
+            this.TargetDirectoryLabel2.Name = "TargetDirectoryLabel2";
+            this.TargetDirectoryLabel2.Size = new System.Drawing.Size(13, 20);
+            this.TargetDirectoryLabel2.TabIndex = 30;
+            this.TargetDirectoryLabel2.Values.Text = "i";
             // 
             // BackButton
             // 
@@ -485,7 +483,7 @@ namespace FTPManager
             "Sunday"});
             this.RecoveryDayComboBox.Location = new System.Drawing.Point(395, 86);
             this.RecoveryDayComboBox.Name = "RecoveryDayComboBox";
-            this.RecoveryDayComboBox.Size = new System.Drawing.Size(184, 21);
+            this.RecoveryDayComboBox.Size = new System.Drawing.Size(284, 21);
             this.RecoveryDayComboBox.TabIndex = 28;
             this.RecoveryDayComboBox.Visible = false;
             // 
@@ -501,7 +499,7 @@ namespace FTPManager
             "Yearly"});
             this.RecoveryFrequencyComboBox.Location = new System.Drawing.Point(395, 64);
             this.RecoveryFrequencyComboBox.Name = "RecoveryFrequencyComboBox";
-            this.RecoveryFrequencyComboBox.Size = new System.Drawing.Size(184, 21);
+            this.RecoveryFrequencyComboBox.Size = new System.Drawing.Size(284, 21);
             this.RecoveryFrequencyComboBox.TabIndex = 0;
             this.RecoveryFrequencyComboBox.Visible = false;
             // 
@@ -579,7 +577,7 @@ namespace FTPManager
             this.OkPictureBox.Image = global::FTPManager.Properties.Resources.OK;
             this.OkPictureBox.Location = new System.Drawing.Point(233, 111);
             this.OkPictureBox.Name = "OkPictureBox";
-            this.OkPictureBox.Size = new System.Drawing.Size(109, 20);
+            this.OkPictureBox.Size = new System.Drawing.Size(209, 20);
             this.OkPictureBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.OkPictureBox.TabIndex = 19;
             this.OkPictureBox.TabStop = false;
@@ -591,7 +589,7 @@ namespace FTPManager
             this.FileMaskTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.FileMaskTextBox.Location = new System.Drawing.Point(395, 42);
             this.FileMaskTextBox.Name = "FileMaskTextBox";
-            this.FileMaskTextBox.Size = new System.Drawing.Size(184, 20);
+            this.FileMaskTextBox.Size = new System.Drawing.Size(284, 20);
             this.FileMaskTextBox.TabIndex = 16;
             this.FileMaskTextBox.Visible = false;
             // 
@@ -628,7 +626,7 @@ namespace FTPManager
             this.TargetDirectoryButton.Font = new System.Drawing.Font("Calibri", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.TargetDirectoryButton.Location = new System.Drawing.Point(460, 20);
             this.TargetDirectoryButton.Name = "TargetDirectoryButton";
-            this.TargetDirectoryButton.Size = new System.Drawing.Size(75, 21);
+            this.TargetDirectoryButton.Size = new System.Drawing.Size(175, 21);
             this.TargetDirectoryButton.TabIndex = 12;
             this.TargetDirectoryButton.Text = "Path";
             this.TargetDirectoryButton.UseVisualStyleBackColor = true;
@@ -686,7 +684,7 @@ namespace FTPManager
             this.ServerAddressTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.ServerAddressTextBox.Location = new System.Drawing.Point(104, 0);
             this.ServerAddressTextBox.Name = "ServerAddressTextBox";
-            this.ServerAddressTextBox.Size = new System.Drawing.Size(474, 20);
+            this.ServerAddressTextBox.Size = new System.Drawing.Size(574, 20);
             this.ServerAddressTextBox.TabIndex = 5;
             this.ServerAddressTextBox.Visible = false;
             // 
@@ -747,8 +745,8 @@ namespace FTPManager
             // 
             this.SplitContainer4.Panel2.Controls.Add(this.Navigator);
             this.SplitContainer4.Panel2.Padding = new System.Windows.Forms.Padding(5);
-            this.SplitContainer4.Size = new System.Drawing.Size(595, 384);
-            this.SplitContainer4.SplitterDistance = 257;
+            this.SplitContainer4.Size = new System.Drawing.Size(695, 408);
+            this.SplitContainer4.SplitterDistance = 273;
             this.SplitContainer4.TabIndex = 0;
             // 
             // FTPBrowserHeaderGroup
@@ -765,7 +763,7 @@ namespace FTPManager
             // FTPBrowserHeaderGroup.Panel
             // 
             this.FTPBrowserHeaderGroup.Panel.Controls.Add(this.FileExplorerListView);
-            this.FTPBrowserHeaderGroup.Size = new System.Drawing.Size(585, 247);
+            this.FTPBrowserHeaderGroup.Size = new System.Drawing.Size(685, 263);
             this.FTPBrowserHeaderGroup.TabIndex = 0;
             this.FTPBrowserHeaderGroup.ValuesPrimary.Heading = "FTP Browser :";
             this.FTPBrowserHeaderGroup.ValuesPrimary.Image = null;
@@ -795,7 +793,7 @@ namespace FTPManager
             this.FileExplorerListView.Location = new System.Drawing.Point(0, 0);
             this.FileExplorerListView.MultiSelect = false;
             this.FileExplorerListView.Name = "FileExplorerListView";
-            this.FileExplorerListView.Size = new System.Drawing.Size(583, 220);
+            this.FileExplorerListView.Size = new System.Drawing.Size(683, 236);
             this.FileExplorerListView.SmallImageList = this.FileExplorerImageList;
             this.FileExplorerListView.TabIndex = 0;
             this.FileExplorerListView.UseCompatibleStateImageBehavior = false;
@@ -846,7 +844,7 @@ namespace FTPManager
             this.Navigator.Pages.AddRange(new ComponentFactory.Krypton.Navigator.KryptonPage[] {
             this.Logcat});
             this.Navigator.SelectedIndex = 0;
-            this.Navigator.Size = new System.Drawing.Size(585, 112);
+            this.Navigator.Size = new System.Drawing.Size(685, 120);
             this.Navigator.TabIndex = 0;
             this.Navigator.Text = "kryptonNavigator1";
             // 
@@ -858,7 +856,7 @@ namespace FTPManager
             this.Logcat.LastVisibleSet = true;
             this.Logcat.MinimumSize = new System.Drawing.Size(50, 50);
             this.Logcat.Name = "Logcat";
-            this.Logcat.Size = new System.Drawing.Size(583, 85);
+            this.Logcat.Size = new System.Drawing.Size(683, 93);
             this.Logcat.Text = "Logcat";
             this.Logcat.ToolTipTitle = "Page ToolTip";
             this.Logcat.UniqueName = "E46FA679F6BD4581E09E06E3DA0825C2";
@@ -872,9 +870,17 @@ namespace FTPManager
             this.LogcatRichTextBox.Location = new System.Drawing.Point(0, 0);
             this.LogcatRichTextBox.Name = "LogcatRichTextBox";
             this.LogcatRichTextBox.ReadOnly = true;
-            this.LogcatRichTextBox.Size = new System.Drawing.Size(583, 85);
+            this.LogcatRichTextBox.Size = new System.Drawing.Size(683, 93);
             this.LogcatRichTextBox.TabIndex = 0;
             this.LogcatRichTextBox.Text = "";
+            // 
+            // kryptonContextMenuItem1
+            // 
+            this.kryptonContextMenuItem1.Text = "Menu Item";
+            // 
+            // kryptonContextMenuHeading1
+            // 
+            this.kryptonContextMenuHeading1.ExtraText = "";
             // 
             // FTPManager
             // 
@@ -882,12 +888,9 @@ namespace FTPManager
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.SplitContainer1);
             this.Controls.Add(this.StatusStrip);
-            this.Controls.Add(this.MenuStrip);
             this.MinimumSize = new System.Drawing.Size(900, 600);
             this.Name = "FTPManager";
             this.Size = new System.Drawing.Size(900, 600);
-            this.MenuStrip.ResumeLayout(false);
-            this.MenuStrip.PerformLayout();
             this.StatusStrip.ResumeLayout(false);
             this.StatusStrip.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.SplitContainer1.Panel1)).EndInit();
@@ -910,7 +913,7 @@ namespace FTPManager
             this.FTPListGroupBox.Panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.FTPListGroupBox)).EndInit();
             this.FTPListGroupBox.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.FTPListDataGridView)).EndInit();
+            this.ContextMenuStrip.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox.Panel)).EndInit();
             this.GeneralControlsGroupBox.Panel.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.GeneralControlsGroupBox)).EndInit();
@@ -952,9 +955,6 @@ namespace FTPManager
 
         #endregion
 
-        private System.Windows.Forms.MenuStrip MenuStrip;
-        private System.Windows.Forms.ToolStripMenuItem FileToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem ExitToolStripMenuItem;
         private ComponentFactory.Krypton.Toolkit.KryptonManager KryptonManager;
         private System.Windows.Forms.StatusStrip StatusStrip;
         private ComponentFactory.Krypton.Toolkit.KryptonSplitContainer SplitContainer1;
@@ -972,7 +972,6 @@ namespace FTPManager
         private System.Windows.Forms.ToolStripStatusLabel FakeLabelForFillingSpace;
         private System.Windows.Forms.ToolStripStatusLabel ProgressLabel;
         private System.Windows.Forms.ToolStripProgressBar ProgressBar;
-        private KryptonDataGridView FTPListDataGridView;
         private KryptonLabel RegionNameLabel;
         private KryptonLabel LoginLabel;
         private KryptonLabel ProviderLabel;
@@ -1017,6 +1016,12 @@ namespace FTPManager
         private KryptonButton DLLastUpdateButton;
         private KryptonButton SynchronizeLocalFileButton;
         private System.Windows.Forms.TableLayoutPanel GeneralControlsTableLayoutPanel;
+        private KryptonContextMenuItem kryptonContextMenuItem1;
+        private KryptonContextMenuHeading kryptonContextMenuHeading1;
+        private System.Windows.Forms.ContextMenuStrip ContextMenuStrip;
+        private System.Windows.Forms.ToolStripMenuItem DuplicateToolStripMenuItem;
+        private System.Windows.Forms.TreeView FTPTreeView;
+        private KryptonLabel TargetDirectoryLabel2;
 
     }
 }

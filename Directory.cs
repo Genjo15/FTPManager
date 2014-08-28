@@ -5,7 +5,7 @@ using System.Text;
 
 namespace FTPManager
 {
-    class Directory
+    public class Directory
     {
         /***************************************************** Variables *******************************************************/
 
